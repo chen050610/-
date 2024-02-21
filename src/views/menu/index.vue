@@ -35,18 +35,18 @@ const goLogin = ()=>{
             <span>系统概览</span>
           </el-menu-item>
 
-          <el-sub-menu index="3">
+          <el-sub-menu index="product_manage">
             <template #title>
               <el-icon><UserFilled /></el-icon>
               <span>用户管理</span>
             </template>
             <el-menu-item-group title="管理员管理">
-              <el-menu-item index="3-1">产品管理员</el-menu-item>
-              <el-menu-item index="3-2">用户管理员</el-menu-item>
-              <el-menu-item index="3-3">消息管理员</el-menu-item>
+              <el-menu-item index="product_manage">产品管理员</el-menu-item>
+              <el-menu-item index="users_manage">用户管理员</el-menu-item>
+              <el-menu-item index="message_manage">消息管理员</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="员工列表">
-              <el-menu-item index="3-4">用户列表</el-menu-item>
+              <el-menu-item index='user_list'>用户列表</el-menu-item>
             </el-menu-item-group>
             </el-sub-menu>
 

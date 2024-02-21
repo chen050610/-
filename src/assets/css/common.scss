@@ -1,0 +1,29 @@
+.table-wrapped{//用户管理
+  padding: 8px;
+  height: calc(100vh - 101px);
+  background: #F5F5F5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  .table-top{
+    .table-header{
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 48px;
+      background: #fff  ;
+      .el-input__wrapper{
+        height: 32px;
+        padding: 0px 15px;
+      }
+    }
+  }
+
+  .table-footer{
+    display: flex;
+    justify-content: flex-end;
+  }
+
+
+}

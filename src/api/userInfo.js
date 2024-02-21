@@ -69,3 +69,108 @@ export const changeEmail = (email , id)=>{
         }
     })
 }
+
+// -----------------------------------用户管理
+//添加管理员
+export const createAdmin = data=>{
+    const {account,...identity} = data
+    return instance({
+        url:'/api/createAdmin',
+        method:'POST',
+        data: {
+            account,
+            ...identity,
+        }
+    })
+}
+//获取管理员列表
+export const getAdminList = identity=>{
+    return instance({
+        url:'/api/getAdminList',
+        method:'POST',
+        data:{
+            identity,
+        }
+    })
+}
+// 编辑管理员
+export const editAdmin = data=>{
+    const {id,...department} = data
+    return instance({
+        url:'/api/editAdmin',
+        method:'POST',
+        data:{
+            id,
+            ...department
+        }
+    })
+}
+////对管理员进型降职,参数id
+export const changeIdentityToUser = id=>{
+    return instance({
+        url:'/api/changeIdentityToUser',
+        method:'POST',
+        data:{
+            id,
+        }
+    })
+}
+//对用户进行赋权
+export const changeIdentityToAdmin = (is,identity)=>{
+    return instance({
+        url:'/api/changeIdentityToAdmin',
+        method:'POST',
+        data:{
+            id,
+            identity
+        }
+    })
+}
+// 通过账号对用户进行搜索
+export const searchUser = account=>{
+    return instance({
+        url:'/api/searchUser',
+        method:'POST',
+        data:{
+            account,
+        }
+    })
+}
+//冻结用户
+export const banUser = id=>{
+    return instance({
+        url:'/api/banUser',
+        method:'POST',
+        data:{
+            id,
+        }
+    })
+}
+//解冻用户
+export const hotUser = id=>{
+    return instance({
+        url:'/api/hotUser',
+        method:'POST',
+        data:{
+            id,
+        }
+    })
+}
+// 获取冻结用户列表
+export const getBanList = ()=>{
+    return instance({
+        url:'/api/getBanList',
+        method:'POST',
+    })
+}
+//删除用户的操作
+export const deleteUser = (id,account)=>{
+    return instance({
+        url:'/api/deleteUser',
+        method:'POST',
+        data:{
+            id,
+            account
+        }
+    })
+}

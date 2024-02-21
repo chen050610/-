@@ -1,8 +1,28 @@
 <script setup lang="ts">
-
+import SvgIcon from '@/components/SvgIcon.vue'
+import {getUserInfor} from '@/api/userInfo.js'
 import BreadCrumb from '@/components/bread_crumb.vue'
 import {onMounted, reactive, ref} from "vue";
 import {useUserInfoStore} from '@/store/userInfo/index'
+//获取用户信息
+// interface userData {
+//   name:string,
+//   sex:string,
+//   identity:string,
+//   department:string,
+// }
+// const userData:userData = {
+//   name:"",
+//   sex:'',
+//   identity:'',
+//   department:''
+// }
+const getUserinfo = async ()=>{
+  const res = await getUserInfor(localStorage.getItem('id'))
+  console.log(res)
+
+}
+getUserinfo()
 //echarts
 import * as echarts from 'echarts';
 // 调用echarts图
@@ -231,8 +251,8 @@ const item=reactive({
           <p>姓名:{{userStore.name}}</p>
           <p>性别:{{userStore.sex=='man'? '男' : '女'}}</p>
           <p>身份:{{userStore.identity}}</p>
-          <p>分管领域:</p>
-          <p>权限:</p>
+          <p>分管领域:全栈工程师</p>
+          <p>权限:高级管理员</p>
         </div>
       </div>
       <div class="manage-user pie">
@@ -242,10 +262,35 @@ const item=reactive({
 <!--    中间-->
     <div class="mid-content-wrapped">
       <div class="product-category-bar mid-content-left">
-        <div class="product-category-bar mid-content-left"></div>
       </div>
       <div class="mid-content-right">
-
+        <div class="title">常用管理</div>
+        <el-row :gutter="20" >
+          <el-col :span="6"><div class="button-area" >
+            <SvgIcon icon-name="user" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name">用户管理</span>
+          </div></el-col>
+          <el-col :span="6"><div class="button-area" >
+                        <SvgIcon icon-name="product" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name">产品管理</span>
+          </div></el-col>
+          <el-col :span="6"><div class="button-area" >
+                        <SvgIcon icon-name="notice" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name">系统消息</span>
+          </div></el-col>
+          <el-col :span="6"><div class="button-area" >
+                        <SvgIcon icon-name="me" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name">个人消息</span>
+          </div></el-col>
+          <el-col :span="6"><div class="button-area" >
+                        <SvgIcon icon-name="message" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name">部门信息</span>
+          </div></el-col>
+          <el-col :span="6"><div class="button-area" >
+                        <SvgIcon icon-name="set" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name">系统设置</span>
+          </div></el-col>
+        </el-row>
       </div>
     </div>
     <!-- 底部内容外壳 -->
@@ -288,7 +333,7 @@ const item=reactive({
         flex-direction: column;
         // 公司
         .company {
-          margin: 10px 0px;
+          margin: 10px 0;
           font-size: 12px;
         }
 
@@ -361,7 +406,7 @@ const item=reactive({
       // 按钮区域
       .button-area {
         margin-bottom: 8px;
-        height: 100px;
+        height: 73px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -370,7 +415,7 @@ const item=reactive({
         background: #F5F5F5;
 
         // 按钮名字
-        .buttom-name {
+        .button-name {
           margin-top: 10px;
         }
       }
@@ -404,4 +449,5 @@ const item=reactive({
     }
   }
 }
+
 </style>

@@ -9,6 +9,9 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // 导入svg图标
 import 'virtual:svg-icons-register'
 import pinia from '@/store/index.js'
+//全局引入样式
+import '@/assets/css/common.scss'
+
 
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
