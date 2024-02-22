@@ -52,3 +52,21 @@ export const getAllCompanyIntroduce= ()=>{
         method:'POST',
     })
 }
+
+//
+export const setDepartment= (data)=>{
+    return instance({
+        url:'/set/setDepartment',
+        method:'POST',
+        data:{
+            set_value:data
+        }
+    })
+}
+//后去部门
+export const getDepartment= ()=>{
+    return instance({
+        url:'/set/getDepartment',
+        method:'POST',
+    })
+}

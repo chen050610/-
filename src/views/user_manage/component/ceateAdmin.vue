@@ -1,27 +1,24 @@
 <script setup lang="ts">
+import {createAdmin} from '@/api/userInfo'
+import { ElMessage } from 'element-plus'
 import { reactive, ref } from 'vue'
 import {bus} from  '@/utils/mitt.js'
 import {create} from "axios";
-const dialogFormVisible = ref(false)
+import {getDepartment} from '@/api/setting'
+let dialogFormVisible = ref(false)
 const title = ref()
-const open =(id)=>{
+const open =()=>{
   dialogFormVisible.value = true
 }
-bus.on("createId",(id:number)=> {
-  if (id == 1){title.value='新建产品管理员'}
-  if (id == 2){title.value='新建用户管理员'}
-  if (id == 3){title.value='新建消息管理员'}
-})
-defineExpose({
-  open,
-})
+
 interface formData {
   account:string,
   password:string,
   name:string,
   sex:string,
   email:string,
-  department:string
+  department:string,
+  identity:string
 }
 const formData:formData = reactive({
   account:'',
@@ -29,7 +26,15 @@ const formData:formData = reactive({
   name:'',
   sex:'',
   email:"",
-  department:''
+  department:'',
+  identity:''
+})
+bus.on("createId",(data)=> {
+  if (data.id == 1){title.value='新建产品管理员'}
+  if (data.id == 2){title.value='新建用户管理员'}
+  if (data.id == 3){title.value='新建消息管理员'}
+  formData.identity = data.identity
+
 })
 const rules = reactive({
   account:[
@@ -51,7 +56,28 @@ const rules = reactive({
     { required: true, message: '请输入管理员的名字' ,trigger:'blur'},
   ],
 })
-
+const emit=defineEmits(['success'])
+const addAdmin =async ()=>{
+  const res = await createAdmin(formData)
+  if (res.status==0){
+    ElMessage({
+      message: '添加成功',
+      type: 'success',
+    })
+    dialogFormVisible.value= false
+    emit('success')
+    } else {
+    ElMessage.error('添加失败!请再次尝试')
+  }
+}
+const departmentData =ref([])
+  const getdepartment = async ()=>{
+  departmentData.value = await getDepartment() as any
+}
+getdepartment()
+defineExpose({
+  open,
+})
 </script>
 
 <template>
@@ -78,11 +104,7 @@ const rules = reactive({
         </el-form-item>
         <el-form-item label="部门" prop="department">
           <el-select v-model="formData.department" placeholder="请选择部门" >
-            <el-option label="总裁办" value="总裁办" />
-            <el-option label="项目部" value="项目部" />
-            <el-option label="总裁办" value="总裁办" />
-            <el-option label="总裁办" value="总裁办" />
-            <el-option label="总裁办" value="总裁办" />
+            <el-option v-for="(item,index) in departmentData " :label="item" :value="item" :key="index"/>
           </el-select>
         </el-form-item>
       </el-form>
@@ -90,7 +112,7 @@ const rules = reactive({
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="dialogFormVisible= false">取消</el-button>
-        <el-button type="primary" @click="dialogFormVisible=false">
+        <el-button type="primary" @click="addAdmin">
           确定
         </el-button>
       </div>

@@ -136,6 +136,16 @@ export const searchUser = account=>{
         }
     })
 }
+//通过部门
+export const searchUserDepartment = department=>{
+    return instance({
+        url:'/api/searchUserDepartment',
+        method:'POST',
+        data:{
+            department,
+        }
+    })
+}
 //冻结用户
 export const banUser = id=>{
     return instance({
@@ -174,3 +184,26 @@ export const deleteUser = (id,account)=>{
         }
     })
 }
+//获取对应身份的额总人数 identity
+export const getAdminListLength = (identity)=>{
+    return instance({
+        url:'/api/getAdminListLength',
+        method:'POST',
+        data:{
+            identity,
+        }
+    })
+}
+//返回数据
+export const returnListData = (pager,identity)=>{
+    return instance({
+        url:'/api/returnListData',
+        method:'POST',
+        data:{
+            pager,identity
+        }
+    })
+}
+
+
+//部门 设置

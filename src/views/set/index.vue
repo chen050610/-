@@ -3,13 +3,13 @@ import BreadCrumb from '@/components/bread_crumb.vue'
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
 import type { UploadProps } from 'element-plus'
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, toRaw} from "vue";
 import {useUserInfoStore} from '@/store/userInfo/index'
 import {bind,changeName,changeSex,changeEmail} from '@/api/userInfo'
 import Editor from "@/views/set/components/editor.vue";
 import ChangePassword from './components/change_password.vue'
 import { bus } from "@/utils/mitt.js"
-import {getCompanyName,changeCompanyName,getAllSwiper } from '@/api/setting'
+import {getCompanyName,changeCompanyName,getAllSwiper,setDepartment,getDepartment} from '@/api/setting'
 const breadCrumb =ref()
 const userStore = useUserInfoStore()
 const activeName = ref('first')
@@ -130,7 +130,60 @@ const getAllswiper = async ()=>{
   imageUrl.value = await getAllSwiper() as any
 }
 getAllswiper()
+//标签
+import { nextTick, } from 'vue'
+import { ElInput } from 'element-plus'
 
+
+const inputValue = ref('')
+const dynamicTags = ref()
+const inputVisible = ref(false)
+const InputRef = ref<InstanceType<typeof ElInput>>()
+
+
+//获取部门数据
+const getdepartment = async ()=>{
+  dynamicTags.value = await getDepartment() as any
+}
+getdepartment()
+
+//关闭时的回调
+const handleClose =async (tag: string) => {
+  dynamicTags.value.splice(dynamicTags.value.indexOf(tag), 1)
+  const res =await setDepartment(JSON.stringify(toRaw(dynamicTags.value)))
+  if(res.status == 0){
+    ElMessage({
+      message:"删除部门成功",
+      type:'success'
+    })
+  } else {
+    ElMessage.error('删除部门成功，请重新更改')
+  }
+}
+//点击按钮出现输入框
+const showInput = () => {
+  inputVisible.value = true
+  nextTick(() => {
+    InputRef.value!.input!.focus()
+  })
+}
+//输入数据以后
+const handleInputConfirm =async () => {
+  if (inputValue.value) {
+    dynamicTags.value.push(inputValue.value)
+    const res =await setDepartment(JSON.stringify(toRaw(dynamicTags.value)))
+    if(res.status == 0){
+      ElMessage({
+        message:"添加部门成功",
+        type:'success'
+      })
+    } else {
+      ElMessage.error('添加部门失败，请重新更改')
+    }
+  }
+  inputVisible.value = false
+  inputValue.value = ''
+}
 </script>
 
 <template>
@@ -272,7 +325,34 @@ getAllswiper()
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="其他设置" name="fourth">其他设置</el-tab-pane>
+        <el-tab-pane label="其他设置" name="fourth">
+          <div class="other-set">
+            <div class="department-set">
+              <span>部门设置</span>
+              <el-tag
+                  v-for="tag in dynamicTags"
+                  :key="tag"
+                  closable
+                  :disable-transitions="false"
+                  @close="handleClose(tag)"
+              >
+                {{ tag }}
+              </el-tag>
+              <el-input
+                  v-if="inputVisible"
+                  ref="InputRef"
+                  v-model="inputValue"
+                  class="w-20"
+                  size="small"
+                  @keyup.enter="handleInputConfirm"
+                  @blur="handleInputConfirm"
+              />
+              <el-button v-else class="button-new-tag" size="small" @click="showInput">
+                + New Tag
+              </el-button>
+            </div>
+          </div>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -330,6 +410,16 @@ getAllswiper()
           height: 96px;
         }
       }
+    }
+  }
+}
+.other-set {
+  padding-left: 50px;
+  font-size: 14px;
+  .department-set{
+    margin-bottom: 24px;
+    span{
+      margin-right: 24px;
     }
   }
 }

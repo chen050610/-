@@ -13,6 +13,13 @@
       align-items: center;
       height: 48px;
       background: #fff  ;
+      .left-wrapped{
+        display: flex;
+        .search-wrapped{
+          margin-right: 24px;
+        }
+      }
+
       .el-input__wrapper{
         height: 32px;
         padding: 0px 15px;
@@ -25,5 +32,7 @@
     justify-content: flex-end;
   }
 
-
+.el-select__wrapper{
+  width: 250px;
+}
 }

@@ -5,29 +5,32 @@ import { bus } from "@/utils/mitt.js"
 import {
   ElMessage
 } from "element-plus"
-import { getCompanyIntroduce} from '@/api/setting'
 import {changeIdentityToUser} from '@/api/userInfo'
-// bus.on("editorTitle", async (id : number) => {
-//   if (id == 1) {
-//     title.value = '编辑公司介绍'
-//     valueHtml.value = await getCompanyIntroduce('公司介绍')
-//   }
-//   if (id == 2) {
-//     title.value = '编辑公司架构'
-//     valueHtml.value = await getCompanyIntroduce('公司架构')
-//   }
-//   if (id == 3) {
-//     title.value = '编辑公司战略'
-//     valueHtml.value = await getCompanyIntroduce('公司战略')
-//   }
-//   if (id == 4) {
-//     title.value = '编辑公司高层'
-//     valueHtml.value = await getCompanyIntroduce('公司高层')
-//   }
-// })
-const deleteadmin = async ()=>{
-  const res  = await  changeIdentityToUser()
+const open =()=>{
+  dialogFormVisible.value = true
 }
+const dialogFormVisible  = ref(false)
+const id = ref()
+bus.on('deleteId',async (Id:number)=>{
+  id.value = Id
+})
+const emit=defineEmits(['success'])
+const deleteadmin = async ()=>{
+  const res  = await  changeIdentityToUser(id.value)
+  if (res.status == 0){
+    ElMessage({
+      message: '降级成功',
+      type: 'success',
+    })
+    dialogFormVisible.value= false
+    emit('success')
+  } else {
+    ElMessage.error('降级失败!请再次尝试')
+  }
+}
+defineExpose({
+  open,
+})
 </script>
 
 <template>
@@ -36,7 +39,7 @@ const deleteadmin = async ()=>{
     <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="deleteadmin">
-          确认定
+          确定
         </el-button>
       </span>
     </template>
