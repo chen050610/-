@@ -19,7 +19,7 @@ const item=reactive({
   first:'产品管理员',
 })
 const adminAccount = ref('')
-const tableData =reactive([
+const tableData =ref([
 ])
 const Create = ref()
 const openCreate = (id)=>{

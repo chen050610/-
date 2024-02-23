@@ -10,6 +10,7 @@ import {getAdminList,
   banUser,
   hotUser
 } from '@/api/userInfo'
+import UserInfo from '../component/user_info.vue'
 import { Search } from '@element-plus/icons-vue'
 import CreateAdmin from '../component/ceateAdmin.vue'
 import {bus} from  '@/utils/mitt.js'
@@ -57,6 +58,15 @@ const searchDepartment = async ()=>{
 const clearOperation = ()=>{
   getAdminlist()
 }
+//用户信息弹窗
+const useri = ref()
+
+const openUser = (row)=>{
+  useri.value.open()
+  bus.emit("userId",row)
+}
+
+
 //分页
 //分页
 
@@ -120,6 +130,9 @@ const hotuser = async(id)=>{
     ElMessage.error('解冻用户失败!请再次尝试')
   }
 }
+bus.on('refeshone',(id)=>{
+  if (id=1){  getFirstPageList()}
+})
 onBeforeUnmount(() => {
   bus.all.clear()
 })
@@ -156,7 +169,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
       <div class="table-content">
-        <el-table :data="tableData" style="width: 100%" border  >
+        <el-table :data="tableData" style="width: 100%" border @row-dblclick="openUser" >
           <el-table-column type="index" width="50" />
           <el-table-column prop="account" label="账号"  />
           <el-table-column prop="name" label="姓名"  />
@@ -195,6 +208,7 @@ onBeforeUnmount(() => {
 <!--  <CreateAdmin ref="Create" @success="getAdminlist"></CreateAdmin>-->
 <!--  <EditAdmin ref="Edit" @success="getAdminlist"></EditAdmin>-->
 <!--  <DeleteAdmin ref="Delete" @success="getAdminlist"></DeleteAdmin>-->
+  <UserInfo ref="useri" @sucess=""></UserInfo>
 </template>
 
 <style scoped lang="scss">

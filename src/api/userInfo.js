@@ -116,7 +116,7 @@ export const changeIdentityToUser = id=>{
     })
 }
 //对用户进行赋权
-export const changeIdentityToAdmin = (is,identity)=>{
+export const changeIdentityToAdmin = (id,identity)=>{
     return instance({
         url:'/api/changeIdentityToAdmin',
         method:'POST',
