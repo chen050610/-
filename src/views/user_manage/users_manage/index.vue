@@ -11,7 +11,8 @@ import {onBeforeUnmount} from "vue";
 import DeleteAdmin from "@/views/user_manage/component/delete_admin.vue";
 const breadCrumb =ref()
 const item=reactive({
-  first:'用户管理员',
+  first:'用户管理',
+  second:'用户管理员',
 })
 const adminAccount = ref('')
 const tableData = ref([
@@ -19,7 +20,7 @@ const tableData = ref([
 const Create = ref()
 const openCreate = (id)=>{
   Create.value.open()
-  bus.emit("createId",{id,identity:item.first})
+  bus.emit("createId",{id,identity:item.second})
 }
 const Edit = ref()
 const openEdit = (id:number)=>{
@@ -51,7 +52,7 @@ const paginationData  = reactive({
 //获取管理员的数量
 const adminTotal = ref(0)
 const getAdminListlength = async ()=>{
-  const res = await getAdminListLength(item.first)
+  const res = await getAdminListLength(item.second)
   adminTotal.value  =  res.length
   paginationData.pageCount = Math.ceil(res.length/10 )
 }
@@ -59,13 +60,13 @@ getAdminListlength()
 
 //默认获取第一页
 const getFirstPageList = async ()=>{
-  tableData.value = await returnListData(1,item.first) as any
+  tableData.value = await returnListData(1,item.second) as any
 }
 getFirstPageList()
 //监听换页
 const currentChange =async (value)=>{
   paginationData.currentPage = value
-  tableData.value = await returnListData(paginationData.currentPage,item.first) as any
+  tableData.value = await returnListData(paginationData.currentPage,item.second) as any
 }
 const getAdminlist =async ()=>{
   await getAdminListlength

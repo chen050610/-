@@ -6,7 +6,7 @@ import {getUserInfor,editAdmin} from '@/api/userInfo'
 import {getDepartment} from '@/api/setting'
 import {ElMessage} from "element-plus";
 const dialogFormVisible = ref(false)
-const title = ref()
+  const title = ref()
 const open =()=>{
   dialogFormVisible.value = true
 }

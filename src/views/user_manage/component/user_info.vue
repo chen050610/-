@@ -45,7 +45,7 @@ const openEdit  = (id)=>{
 const Delete = ref()
 const openDelete = (id,account)=>{
   Delete.value.open()
-  bus.emit('deleteUserId',{id:id,account:account})
+  bus.emit('deleteUserId',{id:id,account:account,name:userData.name})
 }
 defineExpose({
   open,

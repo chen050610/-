@@ -70,3 +70,21 @@ export const getDepartment= ()=>{
         method:'POST',
     })
 }
+
+//
+export const setProduct= (data)=>{
+    return instance({
+        url:'/set/setProduct',
+        method:'POST',
+        data:{
+            set_value:data
+        }
+    })
+}
+//后去部门
+export const getProduct= ()=>{
+    return instance({
+        url:'/set/getProduct',
+        method:'POST',
+    })
+}

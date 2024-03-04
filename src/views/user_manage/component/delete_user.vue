@@ -2,6 +2,7 @@
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 import {ref} from 'vue'
 import { bus } from "@/utils/mitt.js"
+import {tracking} from '@/utils/operation'
 import {
   ElMessage
 } from "element-plus"
@@ -12,19 +13,22 @@ const open =()=>{
 const dialogDeleteVisible  = ref(false)
 const id = ref()
 const account = ref()
+const userName = ref()
 bus.on('deleteUserId',async (data)=>{
   id.value = data.id
   account.value = data.account
+  userName.value =  data.name
 })
 const emit=defineEmits(['success'])
 const deleteuser = async ()=>{
   const res  = await  deleteUser(id.value,account.value)
-  console.log(res)
   if (res.status == 0){
     ElMessage({
       message: '删除成功',
       type: 'success',
     })
+    const name=JSON.parse(localStorage.getItem('pinia-userInfo')).name
+    tracking('管理员',name,userName.value,'高级')
     dialogDeleteVisible.value = false
     bus.emit('offDialog',1)
     bus.emit('refeshone',1)
@@ -39,7 +43,7 @@ defineExpose({
 
 <template>
   <el-dialog v-model="dialogDeleteVisible" title="删除操作" width="600px" destroy-on-close>
-    <span>是否永久删除此用户</span>
+    <span v-if="adminid">是否永久删除此用户</span>
     <template #footer>
       <span class="dialog-footer">
         <el-button type="primary" @click="deleteuser">

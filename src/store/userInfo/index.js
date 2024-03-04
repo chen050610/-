@@ -17,7 +17,6 @@ export const useUserInfoStore = defineStore('userInfo',{
     actions:{
         async userInfo(id){
             const res = await getUserInfor(id)
-            console.log(res)
             this.imageUrl = res.image_url
             this.name = res.name
             this.sex = res.sex
@@ -25,6 +24,7 @@ export const useUserInfoStore = defineStore('userInfo',{
             this.identity = res.identity
             this.account = res.account
             this.email = res.email
+            this.id = res.id
         }
     }
 },{

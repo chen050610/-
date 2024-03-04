@@ -4,6 +4,13 @@ import {getUserInfor} from '@/api/userInfo.js'
 import BreadCrumb from '@/components/bread_crumb.vue'
 import {onMounted, reactive, ref} from "vue";
 import {useUserInfoStore} from '@/store/userInfo/index'
+import {useRouter} from "vue-router";
+import {
+  getAdminAndNumber,
+  getCategoryAndNumber,
+  getDayAndNumber,
+  getLevelAndNumber
+} from '@/api/overview'
 //获取用户信息
 // interface userData {
 //   name:string,
@@ -17,12 +24,12 @@ import {useUserInfoStore} from '@/store/userInfo/index'
 //   identity:'',
 //   department:''
 // }
-const getUserinfo = async ()=>{
-  const res = await getUserInfor(localStorage.getItem('id'))
-  console.log(res)
-
-}
-getUserinfo()
+// const getUserinfo = async ()=>{
+//   const res = await getUserInfor(localStorage.getItem('id'))
+//
+// }
+// getUserinfo()
+const {department,sex,identity,} =JSON.parse(localStorage.getItem('pinia-userInfo'))
 //echarts
 import * as echarts from 'echarts';
 // 调用echarts图
@@ -33,9 +40,13 @@ onMounted(() => {
   massageAllDay()
 })
 // 管理员与用户比值图
-const manageUser = () => {
+const data = ref()
+const manageUser =async () => {
   // 通过类名 初始化
   const mu = echarts.init(document.querySelector('.manage-user'))
+  mu.showLoading()//charts里面的方法数据没有加载处理出来会有动画
+  data.value = await getAdminAndNumber()
+  mu.hideLoading()
   document.querySelector('.manage-user').setAttribute('_echarts_instance_', '')
   // 设置基本的参数
   mu.setOption({
@@ -57,13 +68,7 @@ const manageUser = () => {
         // name: 'Access From',
         type: 'pie',
         radius: '65%',
-        data:  [
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' }
-        ],
+        data:data.value.data,
         emphasis: {
           itemStyle: {
             shadowBlur: 10,
@@ -80,8 +85,12 @@ const manageUser = () => {
   })
 }
 // 产品类别图
+const category = ref()
 const productCategoryBar = async () => {
   const pcb = echarts.init(document.querySelector('.product-category-bar'))
+  pcb.showLoading()//charts里面的方法数据没有加载处理出来会有动画
+  category.value = await getCategoryAndNumber()
+  pcb.hideLoading()
   document.querySelector('.product-category-bar').setAttribute('_echarts_instance_', '')
   pcb.setOption({
     title: {
@@ -97,14 +106,14 @@ const productCategoryBar = async () => {
     xAxis: {
       type: 'category',
       // 食品类，服装类，鞋帽类，日用品类，家具类，家用电器类，纺织品类，五金类
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      data: category.value.category
     },
     yAxis: {
       type: 'value'
     },
     series: [
       {
-        data: [120, 200, 150, 80, 70, 110, 130],
+        data: category.value.price,
         type: 'bar',
         barWidth: 40,
         colorBy: "data"
@@ -115,9 +124,13 @@ const productCategoryBar = async () => {
     pcb.resize()
   })
 }
-// 公告等级分布图
-const massageLevel = () => {
+// 公告等级分布图\
+const messageLevel = ref()
+const massageLevel =async () => {
   const ml = echarts.init(document.querySelector('.massage-level'))
+  ml.showLoading()//charts里面的方法数据没有加载处理出来会有动画
+  messageLevel.value = await getLevelAndNumber()
+  ml.hideLoading()
   document.querySelector('.massage-level').setAttribute('_echarts_instance_', '')
   ml.setOption({
     title: {
@@ -159,13 +172,7 @@ const massageLevel = () => {
         labelLine: {
           show: false
         },
-        data: [
-          { value: 1048, name: 'Search Engine' },
-          { value: 735, name: 'Direct' },
-          { value: 580, name: 'Email' },
-          { value: 484, name: 'Union Ads' },
-          { value: 300, name: 'Video Ads' }
-        ],
+        data: messageLevel.value.data,
       }
     ]
   })
@@ -174,7 +181,8 @@ const massageLevel = () => {
   })
 }
 // 消息每日总量图
-const massageAllDay = () => {
+const dayData = ref()
+const massageAllDay =async () => {
   // // 底部日期的实现
   // let dd = new Date()
   // let week = []
@@ -193,6 +201,9 @@ const massageAllDay = () => {
   //   number.push(res.number)
   // })
   const mad = echarts.init(document.querySelector('.userlogin-week'))
+  mad.showLoading()//charts里面的方法数据没有加载处理出来会有动画
+  dayData.value = await getDayAndNumber()
+  mad.hideLoading()
   document.querySelector('.userlogin-week').setAttribute('_echarts_instance_', '')
   mad.setOption({
     title: {
@@ -207,14 +218,14 @@ const massageAllDay = () => {
     },
     xAxis: {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+      data: dayData.value.week
     },
     yAxis: {
       type: 'value'
     },
     series: [
       {
-        data: [150, 230, 224, 218, 135, 147, 260],
+        data: dayData.value.number,
         type: 'line'
       }
     ]
@@ -228,21 +239,44 @@ const userStore = useUserInfoStore()
 const item=reactive({
   first:'系统概览',
 })
+//路由的条状
 
+const router = useRouter()
+//product_manage,product_list,message_list,file,loginLog,set
+const getRouter = (id)=>{
+  if (id ==1) {
+    router.push('product_manage')
+  }
+  if (id ==2) {
+    router.push('product_list')
+  }
+  if (id ==3) {
+    router.push('message_list')
+  }
+  if (id ==4) {
+    router.push('file')
+  }
+  if (id ==5) {
+    router.push('loginLog')
+  }
+  if (id ==6) {
+    router.push('set')
+  }
+}
 </script>
 
 <template>
   <BreadCrumb ref="breadCrumb" :item="item"></BreadCrumb>
-<!--  外壳-->
+  <!--  外壳-->
   <div class="overview-wrapped">
-<!--    顶部-->
+    <!--    顶部-->
     <div class="top-content-wrapped">
       <div class="person-infor">
-<!--        用户头像-->
+        <!--        用户头像-->
         <div class="person-avator-wrapped">
           <el-avatar :size="100" :src="userStore.imageUrl" />
-          <span class="department">所属部门:全栈工程师</span>
-          <div class="company">所属公司:hhahahahhaa</div>
+          <span class="department">所属部门:{{userStore.department}}</span>
+          <div class="company">所属公司:hahah公司</div>
         </div>
         <div class="line-wrapped">
           <div class="line"></div>
@@ -251,44 +285,44 @@ const item=reactive({
           <p>姓名:{{userStore.name}}</p>
           <p>性别:{{userStore.sex=='man'? '男' : '女'}}</p>
           <p>身份:{{userStore.identity}}</p>
-          <p>分管领域:全栈工程师</p>
-          <p>权限:高级管理员</p>
+          <p>分管领域:{{userStore.department}}</p>
+          <p>权限:{{userStore.identity}}</p>
         </div>
       </div>
       <div class="manage-user pie">
         <div class="manage-user pie"></div>
       </div>
     </div>
-<!--    中间-->
+    <!--    中间-->
     <div class="mid-content-wrapped">
       <div class="product-category-bar mid-content-left">
       </div>
       <div class="mid-content-right">
         <div class="title">常用管理</div>
         <el-row :gutter="20" >
-          <el-col :span="6"><div class="button-area" >
+          <el-col :span="6" @click="getRouter(1)"><div class="button-area" >
             <SvgIcon icon-name="user" style="width: 24px; height: 24px"></SvgIcon>
-            <span class="button-name">用户管理</span>
+            <span class="button-name" >用户管理</span>
           </div></el-col>
-          <el-col :span="6"><div class="button-area" >
-                        <SvgIcon icon-name="product" style="width: 24px; height: 24px"></SvgIcon>
-            <span class="button-name">产品管理</span>
+          <el-col :span="6" @click="getRouter(2)"><div class="button-area" >
+            <SvgIcon icon-name="product" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name" >产品管理</span>
           </div></el-col>
-          <el-col :span="6"><div class="button-area" >
-                        <SvgIcon icon-name="notice" style="width: 24px; height: 24px"></SvgIcon>
-            <span class="button-name">系统消息</span>
+          <el-col :span="6" @click="getRouter(3)"><div class="button-area" >
+            <SvgIcon icon-name="notice" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name" >消息列表</span>
           </div></el-col>
-          <el-col :span="6"><div class="button-area" >
-                        <SvgIcon icon-name="me" style="width: 24px; height: 24px"></SvgIcon>
-            <span class="button-name">个人消息</span>
+          <el-col :span="6" @click="getRouter(4)"><div class="button-area" >
+            <SvgIcon icon-name="me" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name" >合同管理</span>
           </div></el-col>
-          <el-col :span="6"><div class="button-area" >
-                        <SvgIcon icon-name="message" style="width: 24px; height: 24px"></SvgIcon>
-            <span class="button-name">部门信息</span>
+          <el-col :span="6"  @click="getRouter(5)"><div class="button-area" >
+            <SvgIcon icon-name="message" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name">登录日志</span>
           </div></el-col>
-          <el-col :span="6"><div class="button-area" >
-                        <SvgIcon icon-name="set" style="width: 24px; height: 24px"></SvgIcon>
-            <span class="button-name">系统设置</span>
+          <el-col :span="6" @click="getRouter(6)"><div class="button-area" >
+            <SvgIcon icon-name="set" style="width: 24px; height: 24px"></SvgIcon>
+            <span class="button-name" >系统设置</span>
           </div></el-col>
         </el-row>
       </div>

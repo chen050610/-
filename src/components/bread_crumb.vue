@@ -9,7 +9,7 @@ const prop = defineProps(['item'])
     <SvgIcon icon-name="location" class="bread-crumb-icon"></SvgIcon>
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>{{prop.item.first}}</el-breadcrumb-item>
-        <el-breadcrumb-item></el-breadcrumb-item>
+        <el-breadcrumb-item>{{prop.item.second}}</el-breadcrumb-item>
       </el-breadcrumb>
   </div>
 </template>

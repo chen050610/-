@@ -56,11 +56,10 @@ const goLogin = ()=>{
               <span>产品管理</span>
             </template>
             <el-menu-item-group title="入库管理">
-              <el-menu-item index="4-1">产品列表</el-menu-item>
-
+              <el-menu-item index="product_list">产品列表</el-menu-item>
             </el-menu-item-group>
             <el-menu-item-group title="出库管理">
-              <el-menu-item index="4-2">出库列表</el-menu-item>
+              <el-menu-item index="out_product_manage_list">出库列表</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
 
@@ -70,23 +69,23 @@ const goLogin = ()=>{
               <span>消息管理</span>
             </template>
             <el-menu-item-group title="消息管理">
-              <el-menu-item index="5-1">消息列表</el-menu-item>
+              <el-menu-item index="message_list">消息列表</el-menu-item>
 
             </el-menu-item-group>
             <el-menu-item-group title="回收站">
-              <el-menu-item index="5-2">回收站</el-menu-item>
+              <el-menu-item index="recycle">回收站</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
 
-          <el-menu-item index="6">
+          <el-menu-item index="file">
             <el-icon><DocumentRemove /></el-icon>
             <span>合同管理</span>
           </el-menu-item>
-          <el-menu-item index="7">
+          <el-menu-item index="operationLog">
             <el-icon><DocumentRemove /></el-icon>
             <span>操作日志</span>
           </el-menu-item>
-          <el-menu-item index="8">
+          <el-menu-item index="loginLog">
             <el-icon><SetUp /></el-icon>
             <span>登录日志</span>
           </el-menu-item>

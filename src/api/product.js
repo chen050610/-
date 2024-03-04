@@ -69,13 +69,27 @@ export const applyProductList = () =>{
     })
 }
 //产品审核,审核成功以后，更新产品数量。总价，计算出路总价，同时把出库的数据插入output表，把审核的数据设置为空
-export const applyOutProduct = data =>{
+export const auditProductList = data =>{
     const {
         id,
         ...product_out_number
     } = data
     return instance({
-        url:'/pro/applyOutProduct',
+        url:'/pro/auditProductList',
+        method:'POST',
+        data:{
+            id,
+            ...product_out_number
+        }
+    })
+}
+export const auditProduct = data =>{
+    const {
+        id,
+        ...product_out_number
+    } = data
+    return instance({
+        url:'/pro/auditProduct',
         method:'POST',
         data:{
             id,
@@ -173,5 +187,12 @@ export const returnOutProductListData = pager =>{
         data:{
             pager
         }
+    })
+}
+//获取产品出库列表
+export const getauditProductList = () =>{
+    return instance({
+        url:'/pro/getauditProductList',
+        method:'POST',
     })
 }

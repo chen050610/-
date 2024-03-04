@@ -20,7 +20,8 @@ import DeleteAdmin from '../component/delete_admin.vue'
 import {ElMessage} from "element-plus";
 const breadCrumb =ref()
 const item=reactive({
-  first:'用户',
+  first:'用户管理',
+  second:'用户',
 })
 const adminAccount = ref('')
 const tableData = ref([
@@ -80,7 +81,7 @@ const paginationData  = reactive({
 //获取管理员的数量
 const adminTotal = ref(0)
 const getAdminListlength = async ()=>{
-  const res = await getAdminListLength(item.first)
+  const res = await getAdminListLength(item.second)
   adminTotal.value  =  res.length
   paginationData.pageCount = Math.ceil(res.length/10 )
 }
@@ -88,13 +89,13 @@ getAdminListlength()
 
 //默认获取第一页
 const getFirstPageList = async ()=>{
-  tableData.value = await returnListData(1,item.first) as any
+  tableData.value = await returnListData(1,item.second) as any
 }
 getFirstPageList()
 //监听换页
 const currentChange =async (value)=>{
   paginationData.currentPage = value
-  tableData.value = await returnListData(paginationData.currentPage,item.first) as any
+  tableData.value = await returnListData(paginationData.currentPage,item.second) as any
 }
 const getAdminlist = ()=>{
   getFirstPageList()

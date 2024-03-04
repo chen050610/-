@@ -14,12 +14,12 @@ export default defineConfig({
       iconDirs: [resolve(process.cwd(), 'src/assets/svg')],
       symbolId: 'icon-[dir]-[name]',
     })],
-  pluginOptions:{
-    'style-resources-loader':{
-      preprocessor:'scss',
-      patterns:[]
-    }
-  },
+  // pluginOptions:{
+  //   'style-resources-loader':{
+  //     preprocessor:'scss',
+  //     patterns:[]
+  //   }
+  // },
   //配置启动的端口号，还有师傅允许跨域
   server:{
     port:8080,

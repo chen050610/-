@@ -7,7 +7,7 @@ import {
 import { ElMessage } from 'element-plus'
 import {useRouter} from "vue-router";
 import {useUserInfoStore} from '@/store/userInfo/index'
-
+import {loginLog} from '@/api/log'
 const date = ref(Date())
 const router = useRouter()
 const store = useUserInfoStore()
@@ -35,7 +35,7 @@ const openForget =()=>{
 const Register =async ()=>{
   if (registerData.password === registerData.rePassword){
     const res= await register(registerData)
-    console.log(res)
+    // console.log(res)
     //@ts-ignore
     if (res.message =="注册账号成功"){
       ElMessage({
@@ -62,14 +62,18 @@ const Login=async ()=>{
       path:'/home'
     })
     const { token } = res
+    const {id,name,account,email} = res.results
     localStorage.setItem('token',token)
     //@ts-ignore
     store.userInfo(res.results.id)
     localStorage.setItem('id',res.results.id)
+    await loginLog({account,name,email})
   } else {
     ElMessage.error('登录失败')
   }
 }
+
+
 </script>
 
 <template>

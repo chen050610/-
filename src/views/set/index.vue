@@ -9,7 +9,7 @@ import {bind,changeName,changeSex,changeEmail} from '@/api/userInfo'
 import Editor from "@/views/set/components/editor.vue";
 import ChangePassword from './components/change_password.vue'
 import { bus } from "@/utils/mitt.js"
-import {getCompanyName,changeCompanyName,getAllSwiper,setDepartment,getDepartment} from '@/api/setting'
+import {getCompanyName,changeCompanyName,getAllSwiper,setDepartment,getDepartment,setProduct,getProduct} from '@/api/setting'
 const breadCrumb =ref()
 const userStore = useUserInfoStore()
 const activeName = ref('first')
@@ -139,13 +139,22 @@ const inputValue = ref('')
 const dynamicTags = ref()
 const inputVisible = ref(false)
 const InputRef = ref<InstanceType<typeof ElInput>>()
-
-
+//产品可设置
+const inputPValue = ref('')
+const dynamicPTags = ref()
+const inputPVisible = ref(false)
+const InputPRef = ref<InstanceType<typeof ElInput>>()
 //获取部门数据
 const getdepartment = async ()=>{
   dynamicTags.value = await getDepartment() as any
 }
 getdepartment()
+//获取产品数据
+const getproduct = async ()=>{
+  dynamicPTags.value = await getProduct() as any
+  console.log(dynamicPTags.value)
+}
+getproduct()
 
 //关闭时的回调
 const handleClose =async (tag: string) => {
@@ -160,11 +169,31 @@ const handleClose =async (tag: string) => {
     ElMessage.error('删除部门成功，请重新更改')
   }
 }
+//产品关闭时的回调
+const handlePClose =async (tag: string) => {
+  dynamicPTags.value.splice(dynamicPTags.value.indexOf(tag), 1)
+  const res =await setProduct(JSON.stringify(toRaw(dynamicPTags.value)))
+  if(res.status == 0){
+    ElMessage({
+      message:"删除产品成功",
+      type:'success'
+    })
+  } else {
+    ElMessage.error('删除产品成功，请重新更改')
+  }
+}
 //点击按钮出现输入框
 const showInput = () => {
   inputVisible.value = true
   nextTick(() => {
     InputRef.value!.input!.focus()
+  })
+}
+//点击按钮出现输入框//产品的
+const showPInput = () => {
+  inputPVisible.value = true
+  nextTick(() => {
+    InputPRef.value!.input!.focus()
   })
 }
 //输入数据以后
@@ -183,6 +212,23 @@ const handleInputConfirm =async () => {
   }
   inputVisible.value = false
   inputValue.value = ''
+}
+//输入数据以后的函数产品的
+const handlePInputConfirm =async () => {
+  if (inputPValue.value) {
+    dynamicPTags.value.push(inputPValue.value)
+    const res =await setProduct(JSON.stringify(toRaw(dynamicPTags.value)))
+    if(res.status == 0){
+      ElMessage({
+        message:"添加产品成功",
+        type:'success'
+      })
+    } else {
+      ElMessage.error('添加产品失败，请重新更改')
+    }
+  }
+  inputPVisible.value = false
+  inputPValue.value = ''
 }
 </script>
 
@@ -348,7 +394,31 @@ const handleInputConfirm =async () => {
                   @blur="handleInputConfirm"
               />
               <el-button v-else class="button-new-tag" size="small" @click="showInput">
-                + New Tag
+                + 添加部门
+              </el-button>
+            </div>
+            <div class="product-set">
+              <span>产品设置</span>
+              <el-tag
+                  v-for="tag in dynamicPTags"
+                  :key="tag"
+                  closable
+                  :disable-transitions="false"
+                  @close="handlePClose(tag)"
+              >
+                {{ tag }}
+              </el-tag>
+              <el-input
+                  v-if="inputPVisible"
+                  ref="InputPRef"
+                  v-model="inputPValue"
+                  class="w-20"
+                  size="small"
+                  @keyup.enter="handleInputConfirm"
+                  @blur="handlePInputConfirm"
+              />
+              <el-button v-else class="button-new-tag" size="small" @click="showPInput">
+                + 产品
               </el-button>
             </div>
           </div>
@@ -417,6 +487,12 @@ const handleInputConfirm =async () => {
   padding-left: 50px;
   font-size: 14px;
   .department-set{
+    margin-bottom: 24px;
+    span{
+      margin-right: 24px;
+    }
+  }
+  .product-set{
     margin-bottom: 24px;
     span{
       margin-right: 24px;
